@@ -5,17 +5,16 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
 
 import java.util.*;
-import java.io.File;
 import java.io.*;
 import javax.swing.*;
 
 
+@SuppressWarnings("deprecation")
 public class CloudToMongo implements MqttCallback {
     MqttClient mqttclient;
     static MongoClient mongoClient;
@@ -27,6 +26,10 @@ public class CloudToMongo implements MqttCallback {
     static String mongo_database = new String();
     static String mongo_collection = new String();
 
+    
+    
+    
+    
     public static void main(String[] args) {
 
         try {
@@ -49,6 +52,10 @@ public class CloudToMongo implements MqttCallback {
         
     }
 
+    
+    
+    
+    
     public void connecCloud() {
 		int i;
         try {
@@ -62,12 +69,20 @@ public class CloudToMongo implements MqttCallback {
         }
     }
 
+    
+    
+    
+    
     public void connectMongo() {
 		mongoClient = new MongoClient(new MongoClientURI(mongo_host));
 		db = mongoClient.getDB(mongo_database);
         mongocol = db.getCollection(mongo_collection);
     }
 
+    
+    
+    
+    
     @Override
     public void messageArrived(String topic, MqttMessage c) throws Exception {
         try {
@@ -87,31 +102,33 @@ public class CloudToMongo implements MqttCallback {
             System.out.println(e);
         }
     }
+
+    
+    
+    
     
     private DBObject filterSensor(MqttMessage c) {
     	String aux = c.toString().replace("\"\"", "\",\"");
     	JSONObject jsonObj = new JSONObject(aux);	
-    	if(!jsonObj.has("mov")) {
+    	if(!jsonObj.has("cell")) 
     		jsonObj.put("cell", new Random().nextInt(500));
+    	if(!jsonObj.has("mov"))
     		jsonObj.put("mov", new Random().nextInt(100) < 90 ? 0:1);
-    	}else {
-    		System.out.println("ERROR");
-    	}
+    	
     	return (DBObject) JSON.parse(jsonObj.toString()) ;
     }
+
     
     
-
+    
+    
     @Override
-    public void connectionLost(Throwable cause) {
-    }
+    public void connectionLost(Throwable cause) {}
 
+    
+    
+    
+    
     @Override
-    public void deliveryComplete(IMqttDeliveryToken token) {
-    }
-  
-    public String clean(String message) {
-		return (message.replaceAll("\"\"", "\","));
-        
-    }	
+    public void deliveryComplete(IMqttDeliveryToken token) {}
 }
