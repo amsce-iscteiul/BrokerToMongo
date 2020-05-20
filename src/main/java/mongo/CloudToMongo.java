@@ -16,23 +16,24 @@ import javax.swing.*;
 
 @SuppressWarnings("deprecation")
 public class CloudToMongo implements MqttCallback {
-    MqttClient mqttclient;
-    static MongoClient mongoClient;
-    static DB db;
-    static DBCollection mongocol;
-    static String cloud_server = new String();
-    static String cloud_topic = new String();
-    static String mongo_host = new String();
-    static String mongo_database = new String();
-    static String mongo_collection = new String();
-
+	
+    private MqttClient mqttclient;
+    private static MongoClient mongoClient;
     
+    private static DB db;
+    private static DBCollection mongocol;
+    
+    private static String cloud_server;
+    private static String cloud_topic;
+    private static String mongo_host;
+    private static String mongo_database;
+    private static String mongo_collection;
     
     
     
     public static void main(String[] args) {
-
         try {
+        	
             Properties p = new Properties();
             p.load(new FileInputStream("src/main/resources/cloudToMongo.ini"));
             cloud_server = p.getProperty("cloud_server");
@@ -40,16 +41,14 @@ public class CloudToMongo implements MqttCallback {
             mongo_host = p.getProperty("mongo_host");
             mongo_database = p.getProperty("mongo_database");
             mongo_collection = p.getProperty("mongo_collection");
+            
         } catch (Exception e) {
-
             System.out.println("Error reading CloudToMongo.ini file " + e);
             JOptionPane.showMessageDialog(null, "The CloudToMongo.inifile wasn't found.", "CloudToMongo", JOptionPane.ERROR_MESSAGE);
         }
+        
         new CloudToMongo().connecCloud();
         new CloudToMongo().connectMongo();
-        
-        
-        
     }
 
     
@@ -57,9 +56,8 @@ public class CloudToMongo implements MqttCallback {
     
     
     public void connecCloud() {
-		int i;
         try {
-			i = new Random().nextInt(100000);
+        	int i = new Random().nextInt(100000);
             mqttclient = new MqttClient(cloud_server, "CloudToMongo_"+String.valueOf(i)+"_"+cloud_topic);
             mqttclient.connect();
             mqttclient.setCallback(this);
