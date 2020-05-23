@@ -89,15 +89,13 @@ public class CloudToMongo implements MqttCallback {
     }
     
     private DBObject filterSensor(MqttMessage c) {
-    	String aux = c.toString().replace("\"\"", "\",\"");
+    	System.out.println("OI: " + c);
+    	String aux = c.toString().replace("\"\"", "\"");
+    	aux = aux.replace("sens\"", "\"sens\"");
+    	aux = aux.replace("mov\"", "\"mov\"");
+    	System.out.println("Depois: " + aux);
     	JSONObject jsonObj = new JSONObject(aux);	
-    	if(!jsonObj.has("mov")) {
-    		jsonObj.put("cell", new Random().nextInt(500));
-    		jsonObj.put("mov", new Random().nextInt(100) < 90 ? 0:1);
-    	}else {
-    		System.out.println("ERROR");
-    	}
-    	return (DBObject) JSON.parse(jsonObj.toString()) ;
+    	return (DBObject) JSON.parse(jsonObj.toString());
     }
     
     
